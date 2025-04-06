@@ -3,6 +3,7 @@ import mongoose, { Document, Types } from "mongoose";
 interface IProgress extends Document {
   _id: Types.ObjectId;
   task_id: Types.ObjectId;
+  user_id: Types.ObjectId;
   date: Date;
   rating: number;
 }
@@ -11,6 +12,11 @@ const progressSchema = new mongoose.Schema<IProgress>({
   task_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Tasks",
+    required: true,
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   date: {
@@ -25,6 +31,6 @@ const progressSchema = new mongoose.Schema<IProgress>({
   },
 });
 
-const Tasks = mongoose.model<IProgress>("Progress", progressSchema);
+const Progress = mongoose.model<IProgress>("Progress", progressSchema);
 
-export default Tasks;
+export default Progress;

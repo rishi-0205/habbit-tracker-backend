@@ -12,6 +12,7 @@ const profileSchema = new mongoose.Schema<IProfile>({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+    unique: true,
   },
   name: {
     type: String,

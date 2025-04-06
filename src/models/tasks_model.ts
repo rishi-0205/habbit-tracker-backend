@@ -1,4 +1,5 @@
-import mongoose, { Document, Types } from "mongoose";
+import mongoose, { Document, Types, HydratedDocument } from "mongoose";
+import Progress from "./progress_model";
 
 interface ITasks extends Document {
   _id: Types.ObjectId;
@@ -27,6 +28,24 @@ const tasksSchema = new mongoose.Schema<ITasks>({
     required: true,
   },
 });
+
+tasksSchema.pre(
+  "deleteOne",
+  { document: true, query: false } as any,
+  async function (this: HydratedDocument<ITasks>, next: (err?: Error) => void) {
+    const taskid = this._id;
+    try {
+      await Progress.deleteMany({ task_id: taskid });
+      next();
+    } catch (err) {
+      if (err instanceof Error) {
+        next(err);
+      } else {
+        next(new Error("Unknown error"));
+      }
+    }
+  }
+);
 
 const Tasks = mongoose.model<ITasks>("Tasks", tasksSchema);
 
